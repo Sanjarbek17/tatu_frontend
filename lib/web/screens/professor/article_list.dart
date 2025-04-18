@@ -36,9 +36,9 @@ class _ProfessorArticleListScreenState
                       itemBuilder: (ctx, index) {
                         final article = articleProvider.articles[index];
                         return ListTile(
-                          title: Text(article['title']),
+                          title: Text(article.title),
                           subtitle: Text(
-                            'School Year: ${article['school_year']}',
+                            'School Year: ${article.schoolYear.name}',
                           ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,

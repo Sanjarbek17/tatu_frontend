@@ -1,24 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:tatu_frontend/web/models/article.dart';
+import 'package:tatu_frontend/web/models/school_year.dart';
 import 'dart:convert';
 import '../constants.dart';
 
 class ArticleProvider with ChangeNotifier {
-  final List<String> _schoolYears = ['2023-2024', '2024-2025', '2025-2026'];
-  List<dynamic> _articles = [];
+  final List<SchoolYear> _schoolYears = [
+    SchoolYear(
+      name: '2023-2024',
+      startDate: DateTime(2023, 9, 1),
+      endDate: DateTime(2024, 6, 30),
+    ),
+    SchoolYear(
+      name: '2024-2025',
+      startDate: DateTime(2024, 9, 1),
+      endDate: DateTime(2025, 6, 30),
+    ),
+    SchoolYear(
+      name: '2025-2026',
+      startDate: DateTime(2025, 9, 1),
+      endDate: DateTime(2026, 6, 30),
+    ),
+  ];
+  List<Article> _articles = [];
   bool _isLoading = false;
 
-  List<String> get schoolYears => _schoolYears;
-  List<dynamic> get articles => _articles;
+  List<SchoolYear> get schoolYears => _schoolYears;
+  List<Article> get articles => _articles;
   bool get isLoading => _isLoading;
 
-  void addSchoolYear(String year) {
+  void addSchoolYear(SchoolYear year) {
     _schoolYears.add(year);
     notifyListeners();
   }
 
-  void removeSchoolYear(String year) {
-    _schoolYears.remove(year);
+  void removeSchoolYear(SchoolYear year) {
+    _schoolYears.removeWhere((sy) => sy.name == year.name);
     notifyListeners();
   }
 
@@ -44,7 +62,9 @@ class ArticleProvider with ChangeNotifier {
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        _articles = json.decode(response.body);
+        final List<dynamic> jsonData = json.decode(response.body);
+        _articles =
+            jsonData.map((article) => Article.fromJson(article)).toList();
       } else {
         throw Exception('Failed to load articles');
       }

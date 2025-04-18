@@ -122,8 +122,11 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
                 items:
                     articleProvider.schoolYears
                         .map(
-                          (year) =>
-                              DropdownMenuItem(value: year, child: Text(year)),
+                          (year) => DropdownMenuItem(
+                            value:
+                                year.name, // Use the name property of SchoolYear
+                            child: Text(year.name),
+                          ),
                         )
                         .toList(),
                 onChanged: (value) {
