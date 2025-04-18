@@ -59,7 +59,9 @@ class ArticleProvider with ChangeNotifier {
 
   Future<void> fetchArticles(String professorId) async {
     _isLoading = true;
-    notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
 
     final url = Uri.parse('$baseUrl/api/professors/$professorId/articles/');
     try {
@@ -75,7 +77,9 @@ class ArticleProvider with ChangeNotifier {
       rethrow;
     } finally {
       _isLoading = false;
-      notifyListeners();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        notifyListeners();
+      });
     }
   }
 }

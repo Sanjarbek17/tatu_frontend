@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:tatu_frontend/web/models/school_year.dart';
+import 'package:tatu_frontend/web/models/user.dart';
 import 'dart:convert';
 import '../constants.dart';
 import '../models/professor_profile.dart';
@@ -27,16 +29,49 @@ class AuthProvider with ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
+        final responseBody = response.body;
+        if (responseBody.isEmpty) {
+          throw Exception('Empty response from server');
+        }
+
+        final responseData = json.decode(responseBody);
+        if (responseData is! Map<String, dynamic>) {
+          throw Exception('Invalid response format');
+        }
+
         _token = responseData['token'];
         _isProfessor = responseData['is_professor'];
 
         if (_isProfessor) {
-          _professorProfile = ProfessorProfile.fromJson(
-            responseData['profile'],
+          _professorProfile = ProfessorProfile(
+            id: 1, // Example ID
+            user: User(
+              id: 1, // Example ID
+              username: username,
+              email: '$username@example.com', // Example email
+              isProfessor: true,
+              isStudent: false,
+            ),
+            bio: 'Professor of Computer Science', // Example bio
+            department: 'Computer Science', // Example department
           );
         } else {
-          _studentProfile = StudentProfile.fromJson(responseData['profile']);
+          _studentProfile = StudentProfile(
+            id: 1, // Example ID
+            user: User(
+              id: 1, // Example ID
+              username: username,
+              email: '$username@example.com', // Example email
+              isProfessor: false,
+              isStudent: true,
+            ),
+            schoolYear: SchoolYear(
+              id: 1, // Example ID
+              name: '2023-2024',
+              startDate: DateTime(2023, 9, 1),
+              endDate: DateTime(2024, 6, 30),
+            ),
+          );
         }
 
         final prefs = await SharedPreferences.getInstance();
@@ -45,8 +80,13 @@ class AuthProvider with ChangeNotifier {
 
         notifyListeners();
       } else {
-        final responseData = json.decode(response.body);
-        throw Exception(responseData['error'] ?? 'Login failed.');
+        final responseBody = response.body;
+        if (responseBody.isNotEmpty) {
+          final responseData = json.decode(responseBody);
+          throw Exception(responseData['error'] ?? 'Login failed.');
+        } else {
+          throw Exception('Login failed with empty error response.');
+        }
       }
     } catch (error) {
       debugPrint('Login error: $error'); // Log the error for debugging
