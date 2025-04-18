@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:typed_data'; // Import for Uint8List
 import '../constants.dart';
 
 class SubmitArticleProvider with ChangeNotifier {
@@ -12,6 +13,8 @@ class SubmitArticleProvider with ChangeNotifier {
     required String description,
     required String schoolYear,
     required String filePath,
+    Uint8List? fileBytes, // Add fileBytes for web compatibility
+    String? fileName, // Add fileName for web compatibility
   }) async {
     _isSubmitting = true;
     notifyListeners();
@@ -22,8 +25,17 @@ class SubmitArticleProvider with ChangeNotifier {
           http.MultipartRequest('POST', url)
             ..fields['title'] = title
             ..fields['description'] = description
-            ..fields['school_year'] = schoolYear
-            ..files.add(await http.MultipartFile.fromPath('file', filePath));
+            ..fields['school_year'] = schoolYear;
+
+      if (filePath.isNotEmpty) {
+        request.files.add(await http.MultipartFile.fromPath('file', filePath));
+      } else if (fileBytes != null && fileName != null) {
+        request.files.add(
+          http.MultipartFile.fromBytes('file', fileBytes, filename: fileName),
+        );
+      } else {
+        throw Exception('No file provided');
+      }
 
       final response = await request.send();
 
@@ -31,6 +43,7 @@ class SubmitArticleProvider with ChangeNotifier {
         throw Exception('Failed to submit article');
       }
     } catch (error) {
+      debugPrint('Error submitting article: $error'); // Log the error
       rethrow;
     } finally {
       _isSubmitting = false;

@@ -8,16 +8,19 @@ import '../constants.dart';
 class ArticleProvider with ChangeNotifier {
   final List<SchoolYear> _schoolYears = [
     SchoolYear(
+      id: 1,
       name: '2023-2024',
       startDate: DateTime(2023, 9, 1),
       endDate: DateTime(2024, 6, 30),
     ),
     SchoolYear(
+      id: 2,
       name: '2024-2025',
       startDate: DateTime(2024, 9, 1),
       endDate: DateTime(2025, 6, 30),
     ),
     SchoolYear(
+      id: 3,
       name: '2025-2026',
       startDate: DateTime(2025, 9, 1),
       endDate: DateTime(2026, 6, 30),

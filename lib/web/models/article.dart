@@ -2,6 +2,7 @@ import 'professor_profile.dart';
 import 'school_year.dart';
 
 class Article {
+  final int id;
   final String title;
   final String description;
   final String file;
@@ -10,6 +11,7 @@ class Article {
   final SchoolYear schoolYear;
 
   Article({
+    required this.id,
     required this.title,
     required this.description,
     required this.file,
@@ -20,6 +22,7 @@ class Article {
 
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
+      id: json['id'],
       title: json['title'],
       description: json['description'],
       file: json['file'],
@@ -31,6 +34,7 @@ class Article {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'title': title,
       'description': description,
       'file': file,

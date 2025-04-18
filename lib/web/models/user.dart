@@ -1,10 +1,12 @@
 class User {
+  final int id; // Added ID field
   final String username;
   final String email;
   final bool isProfessor;
   final bool isStudent;
 
   User({
+    required this.id,
     required this.username,
     required this.email,
     required this.isProfessor,
@@ -13,6 +15,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      id: json['id'],
       username: json['username'],
       email: json['email'],
       isProfessor: json['isProfessor'],
@@ -22,6 +25,7 @@ class User {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'username': username,
       'email': email,
       'isProfessor': isProfessor,
