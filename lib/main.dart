@@ -27,9 +27,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Tatu Frontend',
         theme: ThemeData(primarySwatch: Colors.blue),
-        initialRoute: '/',
+        initialRoute: '/login',
         routes: {
-          '/': (context) => LoginScreen(),
+          '/login': (context) => LoginScreen(),
           '/student-dashboard': (context) => ArticleListScreen(),
           '/professor-dashboard': (context) => ProfessorArticleListScreen(),
           '/add-article': (context) => AddArticleScreen(),

@@ -1,17 +1,23 @@
-import 'user.dart';
 import 'school_year.dart';
 
 class StudentProfile {
   final int id; // Added ID field
-  final User user;
+  final String username;
+  final String email;
   final SchoolYear? schoolYear;
 
-  StudentProfile({required this.id, required this.user, this.schoolYear});
+  StudentProfile({
+    required this.id,
+    required this.username,
+    required this.email,
+    this.schoolYear,
+  });
 
   factory StudentProfile.fromJson(Map<String, dynamic> json) {
     return StudentProfile(
       id: json['id'],
-      user: User.fromJson(json['user']),
+      username: json['username'],
+      email: json['email'],
       schoolYear:
           json['schoolYear'] != null
               ? SchoolYear.fromJson(json['schoolYear'])
@@ -22,7 +28,8 @@ class StudentProfile {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user': user.toJson(),
+      'username': username,
+      'email': email,
       'schoolYear': schoolYear?.toJson(),
     };
   }

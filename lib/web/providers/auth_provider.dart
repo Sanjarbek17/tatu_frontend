@@ -41,42 +41,27 @@ class AuthProvider with ChangeNotifier {
 
         _token = responseData['token'];
         _isProfessor = responseData['is_professor'];
-
+        debugPrint(responseData.toString());
         if (_isProfessor) {
-          _professorProfile = ProfessorProfile(
-            id: 1, // Example ID
-            user: User(
-              id: 1, // Example ID
-              username: username,
-              email: '$username@example.com', // Example email
-              isProfessor: true,
-              isStudent: false,
-            ),
-            bio: 'Professor of Computer Science', // Example bio
-            department: 'Computer Science', // Example department
-          );
+          _professorProfile = ProfessorProfile.fromJson(responseData);
         } else {
-          _studentProfile = StudentProfile(
-            id: 1, // Example ID
-            user: User(
-              id: 1, // Example ID
-              username: username,
-              email: '$username@example.com', // Example email
-              isProfessor: false,
-              isStudent: true,
-            ),
-            schoolYear: SchoolYear(
-              id: 1, // Example ID
-              name: '2023-2024',
-              startDate: DateTime(2023, 9, 1),
-              endDate: DateTime(2024, 6, 30),
-            ),
-          );
+          _studentProfile = StudentProfile.fromJson(responseData);
         }
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', _token!);
         await prefs.setBool('isProfessor', _isProfessor);
+        if (_isProfessor && _professorProfile != null) {
+          await prefs.setString(
+            'professorProfile',
+            json.encode(_professorProfile!.toJson()),
+          );
+        } else if (_studentProfile != null) {
+          await prefs.setString(
+            'studentProfile',
+            json.encode(_studentProfile!.toJson()),
+          );
+        }
 
         notifyListeners();
       } else {
@@ -146,8 +131,21 @@ class AuthProvider with ChangeNotifier {
     _token = prefs.getString('token');
     _isProfessor = prefs.getBool('isProfessor') ?? false;
 
-    // Fetch profile data from the server if needed
-    // Example: await fetchProfile();
+    if (_isProfessor) {
+      final professorProfileString = prefs.getString('professorProfile');
+      if (professorProfileString != null) {
+        _professorProfile = ProfessorProfile.fromJson(
+          json.decode(professorProfileString),
+        );
+      }
+    } else {
+      final studentProfileString = prefs.getString('studentProfile');
+      if (studentProfileString != null) {
+        _studentProfile = StudentProfile.fromJson(
+          json.decode(studentProfileString),
+        );
+      }
+    }
 
     notifyListeners();
   }

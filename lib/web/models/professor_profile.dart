@@ -1,14 +1,14 @@
-import 'user.dart';
-
 class ProfessorProfile {
   final int id; // Added ID field
-  final User user;
+  final String username;
+  final String email;
   final String? bio;
   final String? department;
 
   ProfessorProfile({
     required this.id,
-    required this.user,
+    required this.username,
+    required this.email,
     this.bio,
     this.department,
   });
@@ -16,7 +16,8 @@ class ProfessorProfile {
   factory ProfessorProfile.fromJson(Map<String, dynamic> json) {
     return ProfessorProfile(
       id: json['id'],
-      user: User.fromJson(json['user']),
+      username: json['username'],
+      email: json['email'],
       bio: json['bio'],
       department: json['department'],
     );
@@ -25,7 +26,8 @@ class ProfessorProfile {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user': user.toJson(),
+      'username': username,
+      'email': email,
       'bio': bio,
       'department': department,
     };

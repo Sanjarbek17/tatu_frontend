@@ -82,4 +82,34 @@ class ArticleProvider with ChangeNotifier {
       });
     }
   }
+
+  Future<void> fetchArticlesByUsername(String username) async {
+    _isLoading = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
+
+    final url = Uri.parse('$baseUrl/api/professors/$username/articles/');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonData = json.decode(response.body);
+        debugPrint(jsonData.toString());
+        _articles =
+            jsonData.map((article) => Article.fromJson(article)).toList();
+      } else {
+        debugPrint(username);
+        debugPrint('Error: ${response.statusCode}');
+        debugPrint('Response body: ${response.body}');
+        throw Exception('Failed to load articles');
+      }
+    } catch (error) {
+      rethrow;
+    } finally {
+      _isLoading = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        notifyListeners();
+      });
+    }
+  }
 }

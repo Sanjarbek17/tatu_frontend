@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/article_provider.dart';
+import '../../providers/auth_provider.dart';
 
 class ProfessorArticleListScreen extends StatefulWidget {
   const ProfessorArticleListScreen({super.key});
@@ -19,7 +20,11 @@ class _ProfessorArticleListScreenState
       context,
       listen: false,
     );
-    articleProvider.fetchArticles('<id>');
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final username =
+        authProvider.professorProfile?.username ??
+        '<default_username>'; // Replace <default_username> with fallback logic if needed
+    articleProvider.fetchArticlesByUsername(username);
   }
 
   @override
@@ -27,7 +32,22 @@ class _ProfessorArticleListScreenState
     return Consumer<ArticleProvider>(
       builder:
           (ctx, articleProvider, _) => Scaffold(
-            appBar: AppBar(title: Text('My Articles')),
+            appBar: AppBar(
+              title: Text('My Articles'),
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.logout),
+                  onPressed: () async {
+                    final authProvider = Provider.of<AuthProvider>(
+                      context,
+                      listen: false,
+                    );
+                    await authProvider.logout();
+                    Navigator.of(context).pushReplacementNamed('/login');
+                  },
+                ),
+              ],
+            ),
             body:
                 articleProvider.isLoading
                     ? Center(child: CircularProgressIndicator())
