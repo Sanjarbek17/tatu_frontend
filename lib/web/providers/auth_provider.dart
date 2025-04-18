@@ -3,13 +3,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../constants.dart';
+import '../models/professor_profile.dart';
+import '../models/student_profile.dart';
 
 class AuthProvider with ChangeNotifier {
   String? _token;
   bool _isProfessor = false;
+  ProfessorProfile? _professorProfile;
+  StudentProfile? _studentProfile;
 
   String? get token => _token;
   bool get isProfessor => _isProfessor;
+  ProfessorProfile? get professorProfile => _professorProfile;
+  StudentProfile? get studentProfile => _studentProfile;
 
   Future<void> login(String username, String password) async {
     final url = Uri.parse('$baseUrl/api/custom-login/');
@@ -24,6 +30,14 @@ class AuthProvider with ChangeNotifier {
         final responseData = json.decode(response.body);
         _token = responseData['token'];
         _isProfessor = responseData['is_professor'];
+
+        if (_isProfessor) {
+          _professorProfile = ProfessorProfile.fromJson(
+            responseData['profile'],
+          );
+        } else {
+          _studentProfile = StudentProfile.fromJson(responseData['profile']);
+        }
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', _token!);
@@ -73,6 +87,8 @@ class AuthProvider with ChangeNotifier {
   Future<void> logout() async {
     _token = null;
     _isProfessor = false;
+    _professorProfile = null;
+    _studentProfile = null;
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
@@ -89,6 +105,9 @@ class AuthProvider with ChangeNotifier {
 
     _token = prefs.getString('token');
     _isProfessor = prefs.getBool('isProfessor') ?? false;
+
+    // Fetch profile data from the server if needed
+    // Example: await fetchProfile();
 
     notifyListeners();
   }
