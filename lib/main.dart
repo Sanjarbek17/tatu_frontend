@@ -3,11 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:tatu_frontend/web/providers/article_provider.dart';
 import 'package:tatu_frontend/web/providers/submit_article_provider.dart';
 import 'web/providers/auth_provider.dart';
-import 'web/screens/login_screen.dart';
+import 'web/screens/auth/login_screen.dart';
 import 'web/screens/student/article_list_screen.dart';
 import 'web/screens/professor/article_list.dart';
 import 'web/screens/professor/article_form.dart';
-import 'web/screens/register_screen.dart';
+import 'web/screens/auth/register_screen.dart';
 
 void main() {
   runApp(const MyApp());
