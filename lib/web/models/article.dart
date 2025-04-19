@@ -1,14 +1,11 @@
-import 'professor_profile.dart';
-import 'school_year.dart';
-
 class Article {
   final int id;
   final String title;
   final String description;
   final String file;
   final DateTime createdAt;
-  final ProfessorProfile professor;
-  final SchoolYear schoolYear;
+  final int professor; // Changed to int
+  final int schoolYear; // Changed to int
 
   Article({
     required this.id,
@@ -16,8 +13,8 @@ class Article {
     required this.description,
     required this.file,
     required this.createdAt,
-    required this.professor,
-    required this.schoolYear,
+    required this.professor, // Changed to int
+    required this.schoolYear, // Changed to int
   });
 
   factory Article.fromJson(Map<String, dynamic> json) {
@@ -26,9 +23,9 @@ class Article {
       title: json['title'],
       description: json['description'],
       file: json['file'],
-      createdAt: DateTime.parse(json['createdAt']),
-      professor: ProfessorProfile.fromJson(json['professor']),
-      schoolYear: SchoolYear.fromJson(json['schoolYear']),
+      createdAt: DateTime.parse(json['created_at']),
+      professor: json['professor'], // Changed to directly use int
+      schoolYear: json['school_year'], // Changed to directly use int
     );
   }
 
@@ -38,9 +35,9 @@ class Article {
       'title': title,
       'description': description,
       'file': file,
-      'createdAt': createdAt.toIso8601String(),
-      'professor': professor.toJson(),
-      'schoolYear': schoolYear.toJson(),
+      'created_at': createdAt.toIso8601String(), // Fixed key to match backend
+      'professor': professor, // Changed to int
+      'school_year': schoolYear, // Changed to int
     };
   }
 }

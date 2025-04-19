@@ -21,9 +21,8 @@ class _ProfessorArticleListScreenState
       listen: false,
     );
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final username =
-        authProvider.professorProfile?.username ??
-        '<default_username>'; // Replace <default_username> with fallback logic if needed
+    print('Professor username: ${authProvider.professorProfile?.username}');
+    final username = authProvider.professorProfile?.username ?? 'sanjarbek';
     articleProvider.fetchArticlesByUsername(username);
   }
 
@@ -57,9 +56,7 @@ class _ProfessorArticleListScreenState
                         final article = articleProvider.articles[index];
                         return ListTile(
                           title: Text(article.title),
-                          subtitle: Text(
-                            'School Year: ${article.schoolYear.name}',
-                          ),
+                          subtitle: Text('School Year: ${article.schoolYear}'),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [

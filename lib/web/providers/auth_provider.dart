@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:tatu_frontend/web/models/school_year.dart';
-import 'package:tatu_frontend/web/models/user.dart';
 import 'dart:convert';
 import '../constants.dart';
 import '../models/professor_profile.dart';
@@ -42,20 +40,24 @@ class AuthProvider with ChangeNotifier {
         _token = responseData['token'];
         _isProfessor = responseData['is_professor'];
         debugPrint(responseData.toString());
+        debugPrint('Login response data: $responseData');
         if (_isProfessor) {
           _professorProfile = ProfessorProfile.fromJson(responseData);
+          debugPrint('Parsed ProfessorProfile: ${_professorProfile?.toJson()}');
         } else {
           _studentProfile = StudentProfile.fromJson(responseData);
+          debugPrint('Parsed StudentProfile: ${_studentProfile?.toJson()}');
         }
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', _token!);
         await prefs.setBool('isProfessor', _isProfessor);
         if (_isProfessor && _professorProfile != null) {
-          await prefs.setString(
-            'professorProfile',
-            json.encode(_professorProfile!.toJson()),
+          final professorProfileJson = json.encode(_professorProfile!.toJson());
+          debugPrint(
+            'Saving professorProfile to SharedPreferences: $professorProfileJson',
           );
+          await prefs.setString('professorProfile', professorProfileJson);
         } else if (_studentProfile != null) {
           await prefs.setString(
             'studentProfile',
@@ -123,6 +125,8 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> tryAutoLogin() async {
+    print('Trying to auto-login...');
+    print('professorProfile: $_professorProfile');
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('token')) {
       return;
@@ -130,22 +134,20 @@ class AuthProvider with ChangeNotifier {
 
     _token = prefs.getString('token');
     _isProfessor = prefs.getBool('isProfessor') ?? false;
-
+    print('isProfessor: $_isProfessor');
     if (_isProfessor) {
       final professorProfileString = prefs.getString('professorProfile');
-      if (professorProfileString != null) {
-        _professorProfile = ProfessorProfile.fromJson(
-          json.decode(professorProfileString),
-        );
-      }
+      debugPrint('Retrieved professorProfileString: $professorProfileString');
+      _professorProfile = ProfessorProfile.fromJson(
+        json.decode(professorProfileString!),
+      );
     } else {
       final studentProfileString = prefs.getString('studentProfile');
-      if (studentProfileString != null) {
-        _studentProfile = StudentProfile.fromJson(
-          json.decode(studentProfileString),
-        );
-      }
+      _studentProfile = StudentProfile.fromJson(
+        json.decode(studentProfileString!),
+      );
     }
+    print('professorProfile2: ${_professorProfile?.username}');
 
     notifyListeners();
   }
