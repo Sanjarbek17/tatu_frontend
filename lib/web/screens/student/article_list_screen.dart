@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../constants.dart';
 
 class ArticleListScreen extends StatefulWidget {
+  static const routeName = '/student-dashboard';
+
   const ArticleListScreen({super.key});
 
   @override
@@ -45,10 +48,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                 'Could not fetch articles. Please try again later.',
               ),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: Text('Okay'),
-                ),
+                TextButton(onPressed: () => context.pop(), child: Text('Okay')),
               ],
             ),
       );

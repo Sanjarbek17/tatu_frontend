@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:tatu_frontend/web/screens/professor/article_form.dart';
 import '../../providers/article_provider.dart';
 import '../../providers/auth_provider.dart';
 
 class ProfessorArticleListScreen extends StatefulWidget {
+  static const routeName = '/professor-dashboard';
+
   const ProfessorArticleListScreen({super.key});
 
   @override
@@ -42,7 +46,7 @@ class _ProfessorArticleListScreenState
                       listen: false,
                     );
                     await authProvider.logout();
-                    Navigator.of(context).pushReplacementNamed('/login');
+                    context.go('/login');
                   },
                 ),
               ],
@@ -79,7 +83,7 @@ class _ProfessorArticleListScreenState
                     ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                Navigator.of(context).pushNamed('/add-article');
+                context.go(AddArticleScreen.routeName);
               },
               child: Icon(Icons.add),
             ),

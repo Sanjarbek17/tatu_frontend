@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tatu_frontend/web/constants.dart';
 import '../../providers/submit_article_provider.dart';
@@ -7,6 +8,8 @@ import '../../services/school_year_service.dart';
 import '../../models/school_year.dart';
 
 class AddArticleScreen extends StatefulWidget {
+  static const routeName = '/add-article';
+
   const AddArticleScreen({super.key});
 
   @override
@@ -60,10 +63,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
               title: Text('Missing Information'),
               content: Text('Please fill all fields and select a file.'),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: Text('Okay'),
-                ),
+                TextButton(onPressed: () => context.pop(), child: Text('Okay')),
               ],
             ),
       );
@@ -93,8 +93,8 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(ctx).pop();
-                    Navigator.of(context).pop();
+                    context.pop();
+                    context.pop();
                   },
                   child: Text('Okay'),
                 ),
@@ -110,10 +110,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
               title: Text('Error'),
               content: Text(error.toString()),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: Text('Okay'),
-                ),
+                TextButton(onPressed: () => context.pop(), child: Text('Okay')),
               ],
             ),
       );

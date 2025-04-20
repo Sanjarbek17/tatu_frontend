@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:tatu_frontend/web/screens/auth/register_screen.dart';
 import '../../providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
+  static const routeName = '/login';
+
   const LoginScreen({super.key});
 
   @override
@@ -28,9 +32,9 @@ class _LoginScreenState extends State<LoginScreen> {
       final isProfessor =
           Provider.of<AuthProvider>(context, listen: false).isProfessor;
       if (isProfessor) {
-        Navigator.of(context).pushReplacementNamed('/professor-dashboard');
+        context.go('/professor-dashboard');
       } else {
-        Navigator.of(context).pushReplacementNamed('/student-dashboard');
+        context.go('/student-dashboard');
       }
     } catch (error) {
       showDialog(
@@ -40,10 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
               title: Text('Login Failed'),
               content: Text(error.toString()),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: Text('Okay'),
-                ),
+                TextButton(onPressed: () => context.pop(), child: Text('Okay')),
               ],
             ),
       );
@@ -83,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text("Don't have an account?"),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed('/register');
+                    context.go(RegisterScreen.routeName);
                   },
                   child: Text('Register'),
                 ),

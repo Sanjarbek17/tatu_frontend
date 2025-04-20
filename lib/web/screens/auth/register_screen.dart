@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
+  static const routeName = '/register';
+
   const RegisterScreen({super.key});
 
   @override
@@ -40,7 +43,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextButton(
                   onPressed: () {
                     Navigator.of(ctx).pop();
-                    Navigator.of(context).pop(); // Go back to login
+                    context.go(
+                      '/login',
+                    ); // Navigate to login screen using go_router
                   },
                   child: Text('Okay'),
                 ),
