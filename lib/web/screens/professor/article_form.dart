@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
-import '../../providers/article_provider.dart';
+import 'package:tatu_frontend/web/constants.dart';
 import '../../providers/submit_article_provider.dart';
+import '../../services/school_year_service.dart';
+import '../../models/school_year.dart';
 
 class AddArticleScreen extends StatefulWidget {
   const AddArticleScreen({super.key});
@@ -14,9 +16,28 @@ class AddArticleScreen extends StatefulWidget {
 class _AddArticleScreenState extends State<AddArticleScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  String? _selectedSchoolYear;
+  SchoolYear? _selectedSchoolYear;
   PlatformFile? _selectedFile;
   final bool _isLoading = false;
+  List<SchoolYear> _schoolYears = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSchoolYears();
+  }
+
+  Future<void> _fetchSchoolYears() async {
+    final schoolYearService = SchoolYearService(baseUrl);
+    try {
+      final schoolYears = await schoolYearService.getAllSchoolYears();
+      setState(() {
+        _schoolYears = schoolYears;
+      });
+    } catch (error) {
+      print('Error fetching school years: $error');
+    }
+  }
 
   Future<void> _pickFile() async {
     final result = await FilePicker.platform.pickFiles(type: FileType.any);
@@ -58,8 +79,9 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
       await submitArticleProvider.submitArticle(
         title: _titleController.text,
         description: _descriptionController.text,
-        schoolYear: _selectedSchoolYear!,
-        filePath: _selectedFile!.path!,
+        schoolYear: _selectedSchoolYear!.id,
+        fileBytes: _selectedFile!.bytes!,
+        fileName: _selectedFile!.name,
       );
 
       showDialog(
@@ -80,6 +102,7 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
             ),
       );
     } catch (error) {
+      print('error submitting article: $error');
       showDialog(
         context: context,
         builder:
@@ -99,8 +122,6 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final articleProvider = Provider.of<ArticleProvider>(context);
-
     return Scaffold(
       appBar: AppBar(title: Text('Add Article')),
       body: Padding(
@@ -117,14 +138,13 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
                 controller: _descriptionController,
                 decoration: InputDecoration(labelText: 'Description'),
               ),
-              DropdownButtonFormField<String>(
+              DropdownButtonFormField<SchoolYear>(
                 value: _selectedSchoolYear,
                 items:
-                    articleProvider.schoolYears
+                    _schoolYears
                         .map(
                           (year) => DropdownMenuItem(
-                            value:
-                                year.name, // Use the name property of SchoolYear
+                            value: year,
                             child: Text(year.name),
                           ),
                         )

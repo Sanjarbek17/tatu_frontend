@@ -34,7 +34,12 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ArticleProvider()),
-        ChangeNotifierProvider(create: (_) => SubmitArticleProvider()),
+        ChangeNotifierProvider(
+          create:
+              (context) => SubmitArticleProvider(
+                Provider.of<AuthProvider>(context, listen: false),
+              ),
+        ),
       ],
       child: MaterialApp(
         title: 'Tatu Frontend',

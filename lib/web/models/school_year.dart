@@ -15,8 +15,8 @@ class SchoolYear {
     return SchoolYear(
       id: json['id'],
       name: json['name'],
-      startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
+      startDate: DateTime.parse(json['start_date']),
+      endDate: DateTime.parse(json['end_date']),
     );
   }
 
