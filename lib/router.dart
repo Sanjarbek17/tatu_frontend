@@ -1,13 +1,40 @@
-
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:tatu_frontend/web/providers/auth_provider.dart';
 import 'package:tatu_frontend/web/screens/auth/login_screen.dart';
 import 'package:tatu_frontend/web/screens/auth/register_screen.dart';
 import 'package:tatu_frontend/web/screens/professor/article_form.dart';
 import 'package:tatu_frontend/web/screens/professor/article_list.dart';
 import 'package:tatu_frontend/web/screens/student/article_list_screen.dart';
 
+class LoginObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPush(route, previousRoute);
+    _checkLoginStatus(route);
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    if (newRoute != null) {
+      _checkLoginStatus(newRoute);
+    }
+  }
+
+  void _checkLoginStatus(Route<dynamic> route) async {
+    final authProvider = route.navigator!.context.read<AuthProvider>();
+    final isLoggedIn = await authProvider.tryAutoLogin();
+    if (!isLoggedIn && route.settings.name != LoginScreen.routeName) {
+      GoRouter.of(route.navigator!.context).go(LoginScreen.routeName);
+    }
+  }
+}
+
 final GoRouter router = GoRouter(
   initialLocation: LoginScreen.routeName,
+  observers: [LoginObserver()],
   routes: [
     GoRoute(
       path: LoginScreen.routeName,

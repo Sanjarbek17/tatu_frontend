@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -124,12 +125,12 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> tryAutoLogin() async {
+  Future<bool> tryAutoLogin() async {
     print('Trying to auto-login...');
     print('professorProfile: $_professorProfile');
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('token')) {
-      return;
+      return false;
     }
 
     _token = prefs.getString('token');
@@ -150,5 +151,13 @@ class AuthProvider with ChangeNotifier {
     print('professorProfile2: ${_professorProfile?.username}');
 
     notifyListeners();
+    return true;
+  }
+
+  Future<void> checkLoginStatus(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('token')) {
+      context.go('/login');
+    }
   }
 }

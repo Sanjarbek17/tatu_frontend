@@ -1,3 +1,5 @@
+import 'dart:html' as html;
+
 class Article {
   final int id;
   final String title;
@@ -39,5 +41,16 @@ class Article {
       'professor': professor, // Changed to int
       'school_year': schoolYear, // Changed to int
     };
+  }
+
+  void downloadFile() {
+    final blob = html.Blob([file]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor =
+        html.AnchorElement(href: url)
+          ..target = 'blank'
+          ..download = title;
+    anchor.click();
+    html.Url.revokeObjectUrl(url);
   }
 }
