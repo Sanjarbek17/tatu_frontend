@@ -3,9 +3,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tatu_frontend/web/constants.dart';
-import '../../providers/submit_article_provider.dart';
-import '../../services/school_year_service.dart';
-import '../../models/school_year.dart';
+import '../providers/submit_article_provider.dart';
+import '../services/school_year_service.dart';
+import '../models/school_year.dart';
 
 class AddArticleScreen extends StatefulWidget {
   static const routeName = '/add-article';
