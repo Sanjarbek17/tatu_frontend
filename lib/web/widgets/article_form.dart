@@ -122,18 +122,41 @@ class _AddArticleScreenState extends State<AddArticleScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('Add Article')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width / 4,
+          vertical: 10,
+        ),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
                 controller: _titleController,
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 15,
+                  ),
+                ),
               ),
+              SizedBox(height: 10),
               TextField(
                 controller: _descriptionController,
-                decoration: InputDecoration(labelText: 'Description'),
+                maxLines: 5, // Allow more lines for the description
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: 20,
+                  ), // Increased padding
+                ),
               ),
               DropdownButtonFormField<SchoolYear>(
                 value: _selectedSchoolYear,
