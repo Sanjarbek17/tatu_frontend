@@ -93,7 +93,7 @@ class ArticleListWidget extends StatelessWidget {
                         Expanded(
                           flex: 1,
                           child: Text(
-                            article.professor.toString(),
+                            article.professor.username,
                             style: TextStyle(
                               color: Colors.grey[600],
                               fontSize: 12.0,
@@ -112,18 +112,21 @@ class ArticleListWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.visibility, color: Colors.blue),
-                              onPressed: () {
-                                // Handle view article
-                              },
-                            ),
-                            Consumer<AuthProvider>(
-                              builder: (ctx, authProvider, _) {
-                                return authProvider.isProfessor
-                                    ? IconButton(
+                        Consumer<AuthProvider>(
+                          builder: (ctx, authProvider, _) {
+                            return authProvider.isProfessor
+                                ? Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.visibility,
+                                        color: Colors.blue,
+                                      ),
+                                      onPressed: () {
+                                        // Handle view article
+                                      },
+                                    ),
+                                    IconButton(
                                       icon: Icon(
                                         Icons.edit,
                                         color: Colors.orange,
@@ -131,17 +134,20 @@ class ArticleListWidget extends StatelessWidget {
                                       onPressed: () {
                                         // Handle edit article
                                       },
-                                    )
-                                    : SizedBox.shrink();
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                // Handle delete article
-                              },
-                            ),
-                          ],
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () {
+                                        // Handle delete article
+                                      },
+                                    ),
+                                  ],
+                                )
+                                : SizedBox.shrink();
+                          },
                         ),
                       ],
                     ),

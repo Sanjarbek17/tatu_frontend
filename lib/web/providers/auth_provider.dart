@@ -13,7 +13,7 @@ class AuthProvider with ChangeNotifier {
   StudentProfile? _studentProfile;
 
   String? get token => _token;
-  bool get isProfessor => _isProfessor;
+  bool get isProfessor => professorProfile != null;
   ProfessorProfile? get professorProfile => _professorProfile;
   StudentProfile? get studentProfile => _studentProfile;
 

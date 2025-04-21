@@ -90,6 +90,11 @@ class _ProfessorArticleListScreenState
                     });
                   },
                   selectedScreen: _selectedScreen, // Pass selected screen
+                  isProfessor:
+                      Provider.of<AuthProvider>(
+                        context,
+                        listen: false,
+                      ).isProfessor, // Professors always have access to professor-specific features
                 ),
                 Expanded(
                   child:

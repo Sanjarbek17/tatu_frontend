@@ -1,58 +1,79 @@
 import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget {
-  final List<Map<String, dynamic>> items = [
-    {'title': 'Dashboard', 'icon': Icons.dashboard, 'screen': '/dashboard'},
-    {
-      'title': 'Professor Articles',
-      'icon': Icons.article,
-      'screen': '/professor-articles',
-    },
-    {'title': 'Add Article', 'icon': Icons.add, 'screen': '/add-article'},
-    {'title': 'Sales', 'icon': Icons.bar_chart, 'screen': '/sales'},
-    {'title': 'Analytics', 'icon': Icons.analytics, 'screen': '/analytics'},
-    {'title': 'Layouts', 'icon': Icons.view_quilt, 'screen': '/layouts'},
-    {
-      'title': 'Online Courses',
-      'icon': Icons.school,
-      'screen': '/online-courses',
-    },
-    {'title': 'Finance', 'icon': Icons.attach_money, 'screen': '/finance'},
-    {'title': 'Membership', 'icon': Icons.group, 'screen': '/membership'},
-    {'title': 'User', 'icon': Icons.person, 'screen': '/user'},
-    {'title': 'Elements', 'icon': Icons.widgets, 'screen': '/elements'},
-    {'title': 'Basic', 'icon': Icons.layers, 'screen': '/basic'},
-    {'title': 'Advance', 'icon': Icons.upgrade, 'screen': '/advance'},
-    {'title': 'Icons', 'icon': Icons.insert_emoticon, 'screen': '/icons'},
-    {
-      'title': 'Forms Elements',
-      'icon': Icons.format_align_left,
-      'screen': '/forms-elements',
-    },
-    {
-      'title': 'Forms Plugins',
-      'icon': Icons.extension,
-      'screen': '/forms-plugins',
-    },
-    {'title': 'Landing page', 'icon': Icons.web, 'screen': '/landing-page'},
-    {
-      'title': 'Authentication',
-      'icon': Icons.lock,
-      'screen': '/authentication',
-    },
-    {'title': 'Settings', 'icon': Icons.settings, 'screen': '/settings'},
-    {'title': 'Email', 'icon': Icons.email, 'screen': '/email'},
-    {'title': 'Chat', 'icon': Icons.chat, 'screen': '/chat'},
-  ];
+  final bool
+  isProfessor; // Added parameter to determine if the user is a professor
 
-  final Function(String) onItemSelected;
-  final String selectedScreen; // Added to track selected screen
+  final List<Map<String, dynamic>> items;
 
   CustomDrawer({
     required this.onItemSelected,
     required this.selectedScreen,
+    required this.isProfessor, // Initialize isProfessor
     super.key,
-  });
+  }) : items = [
+         {
+           'title': 'Dashboard',
+           'icon': Icons.dashboard,
+           'screen': '/dashboard',
+         },
+         {
+           'title': 'Professor Articles',
+           'icon': Icons.article,
+           'screen': '/professor-articles',
+         },
+         if (isProfessor)
+           {
+             'title': 'Add Article',
+             'icon': Icons.add,
+             'screen': '/add-article',
+           },
+         {'title': 'Sales', 'icon': Icons.bar_chart, 'screen': '/sales'},
+         {
+           'title': 'Analytics',
+           'icon': Icons.analytics,
+           'screen': '/analytics',
+         },
+         {'title': 'Layouts', 'icon': Icons.view_quilt, 'screen': '/layouts'},
+         {
+           'title': 'Online Courses',
+           'icon': Icons.school,
+           'screen': '/online-courses',
+         },
+         {'title': 'Finance', 'icon': Icons.attach_money, 'screen': '/finance'},
+         {'title': 'Membership', 'icon': Icons.group, 'screen': '/membership'},
+         {'title': 'User', 'icon': Icons.person, 'screen': '/user'},
+         {'title': 'Elements', 'icon': Icons.widgets, 'screen': '/elements'},
+         {'title': 'Basic', 'icon': Icons.layers, 'screen': '/basic'},
+         {'title': 'Advance', 'icon': Icons.upgrade, 'screen': '/advance'},
+         {'title': 'Icons', 'icon': Icons.insert_emoticon, 'screen': '/icons'},
+         {
+           'title': 'Forms Elements',
+           'icon': Icons.format_align_left,
+           'screen': '/forms-elements',
+         },
+         {
+           'title': 'Forms Plugins',
+           'icon': Icons.extension,
+           'screen': '/forms-plugins',
+         },
+         {
+           'title': 'Landing page',
+           'icon': Icons.web,
+           'screen': '/landing-page',
+         },
+         {
+           'title': 'Authentication',
+           'icon': Icons.lock,
+           'screen': '/authentication',
+         },
+         {'title': 'Settings', 'icon': Icons.settings, 'screen': '/settings'},
+         {'title': 'Email', 'icon': Icons.email, 'screen': '/email'},
+         {'title': 'Chat', 'icon': Icons.chat, 'screen': '/chat'},
+       ];
+
+  final Function(String) onItemSelected;
+  final String selectedScreen; // Added to track selected screen
 
   @override
   Widget build(BuildContext context) {

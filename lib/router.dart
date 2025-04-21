@@ -6,7 +6,6 @@ import 'package:tatu_frontend/web/screens/auth/login_screen.dart';
 import 'package:tatu_frontend/web/screens/auth/register_screen.dart';
 import 'package:tatu_frontend/web/screens/professor/article_form.dart';
 import 'package:tatu_frontend/web/screens/professor/professor_article_list.dart';
-import 'package:tatu_frontend/web/screens/student/article_list_screen.dart';
 
 class LoginObserver extends NavigatorObserver {
   @override
@@ -64,10 +63,10 @@ final GoRouter router = GoRouter(
       path: LoginScreen.routeName,
       builder: (context, state) => const LoginScreen(),
     ),
-    GoRoute(
-      path: ArticleListScreen.routeName,
-      builder: (context, state) => const ArticleListScreen(),
-    ),
+    // GoRoute(
+    //   path: ArticleListScreen.routeName,
+    //   builder: (context, state) => const ArticleListScreen(),
+    // ),
     GoRoute(
       path: ProfessorArticleListScreen.routeName,
       builder: (context, state) => const ProfessorArticleListScreen(),

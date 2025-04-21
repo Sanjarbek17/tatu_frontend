@@ -59,7 +59,8 @@ class _LoginScreenState extends State<LoginScreen> {
       if (isProfessor) {
         context.go('/professor-dashboard');
       } else {
-        context.go('/student-dashboard');
+        context.go('/professor-dashboard');
+        // context.go('/student-dashboard');
       }
     } catch (error) {
       showDialog(

@@ -1,3 +1,4 @@
+import 'package:tatu_frontend/web/models/professor_profile.dart';
 import 'package:tatu_frontend/web/models/school_year.dart';
 
 class Article {
@@ -6,7 +7,7 @@ class Article {
   final String description;
   final String file;
   final DateTime createdAt;
-  final int professor; // Changed to int
+  final ProfessorProfile professor; // Changed to int
   final SchoolYear schoolYear; // Changed to int
 
   Article({
@@ -26,7 +27,7 @@ class Article {
       description: json['description'],
       file: json['file'],
       createdAt: DateTime.parse(json['created_at']),
-      professor: json['professor'], // Changed to directly use int
+      professor: ProfessorProfile.fromJson(json['professor']), // Changed to directly use int
       schoolYear: SchoolYear.fromJson(json['school_year']),
     );
   }
@@ -38,7 +39,7 @@ class Article {
       'description': description,
       'file': file,
       'created_at': createdAt.toIso8601String(), // Fixed key to match backend
-      'professor': professor, // Changed to int
+      'professor': professor.toJson(), // Changed to int
       'school_year': schoolYear.toJson(), // Changed to int
     };
   }
