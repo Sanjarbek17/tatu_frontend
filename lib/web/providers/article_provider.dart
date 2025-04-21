@@ -5,6 +5,8 @@ import 'package:tatu_frontend/web/models/school_year.dart';
 import 'dart:convert';
 import '../constants.dart';
 
+import 'dart:html' as html;
+
 class ArticleProvider with ChangeNotifier {
   final List<SchoolYear> _schoolYears = [
     SchoolYear(
@@ -49,8 +51,6 @@ class ArticleProvider with ChangeNotifier {
     required String schoolYear,
     required String fileName,
   }) {
-    // Logic to add the article (e.g., saving to a list or database)
-    // For now, we just print the details for demonstration purposes.
     print(
       'Article added: Title: $title, Description: $description, School Year: $schoolYear, File Name: $fileName',
     );
@@ -110,6 +110,33 @@ class ArticleProvider with ChangeNotifier {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         notifyListeners();
       });
+    }
+  }
+
+  Future<void> downloadArticle(Article article) async {
+    final url = Uri.parse('$baseUrl${article.file}');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final bytes = response.bodyBytes;
+        final fileName = article.file.split('/').last;
+
+        // Create a Blob and trigger a download in the browser
+        final blob = html.Blob([bytes]);
+        final url = html.Url.createObjectUrlFromBlob(blob);
+
+        html.AnchorElement(href: url)
+          ..target = 'blank'
+          ..download = fileName
+          ..click();
+        html.Url.revokeObjectUrl(url);
+
+        print('Article downloaded successfully: $fileName');
+      } else {
+        print('Error downloading article: ${response.reasonPhrase}');
+      }
+    } catch (error) {
+      print('Error downloading article: $error');
     }
   }
 }
