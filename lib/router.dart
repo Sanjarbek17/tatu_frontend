@@ -24,9 +24,16 @@ class LoginObserver extends NavigatorObserver {
   }
 
   void _checkLoginStatus(Route<dynamic> route) async {
+    if (route.settings.name == RegisterScreen.routeName ||
+        route.settings.name == LoginScreen.routeName ||
+        route.settings.name == null) {
+      return;
+    }
     final authProvider = route.navigator!.context.read<AuthProvider>();
     final isLoggedIn = await authProvider.tryAutoLogin();
     if (!isLoggedIn && route.settings.name != LoginScreen.routeName) {
+      print('screen name: ${route.settings.name}');
+
       GoRouter.of(route.navigator!.context).go(LoginScreen.routeName);
     }
   }
