@@ -17,11 +17,13 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
   @override
   void initState() {
     super.initState();
-    final articleProvider = Provider.of<StudentArticleProvider>(
-      context,
-      listen: false,
-    );
-    articleProvider.fetchArticles();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final articleProvider = Provider.of<StudentArticleProvider>(
+        context,
+        listen: false,
+      );
+      articleProvider.fetchArticles();
+    });
   }
 
   @override
@@ -82,11 +84,11 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                           elevation: 4.0,
                           child: ListTile(
                             title: Text(
-                              article['title'],
+                              article.title,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text(
-                              'By ${article['professor_name']} - ${article['school_year']}',
+                              'By ${article.description} - ${article.schoolYear}',
                               style: TextStyle(color: Colors.grey[600]),
                             ),
                             onTap: () {

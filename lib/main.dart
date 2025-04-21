@@ -26,7 +26,9 @@ class MyApp extends StatelessWidget {
                 Provider.of<AuthProvider>(context, listen: false),
               ),
         ),
-        ChangeNotifierProvider(create: (_) => StudentArticleProvider()),
+        ChangeNotifierProvider(create: (_) => StudentArticleProvider(
+          Provider.of<AuthProvider>(context, listen: false),
+        )),
       ],
       child: MaterialApp.router(
         title: 'Tatu Frontend',

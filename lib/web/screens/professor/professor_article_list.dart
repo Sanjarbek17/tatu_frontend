@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:tatu_frontend/web/widgets/article_form.dart';
+import 'package:tatu_frontend/web/screens/professor/article_form.dart';
 import 'package:tatu_frontend/web/widgets/article_list_widget.dart';
 import 'package:tatu_frontend/web/providers/article_provider.dart';
 import 'package:tatu_frontend/web/providers/auth_provider.dart';
