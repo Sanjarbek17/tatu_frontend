@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:email_validator/email_validator.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../services/username_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
@@ -17,8 +19,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
+  final UsernameService _usernameService = UsernameService();
   bool _isLoading = false;
   bool _isProfessor = false;
+  String? _usernameError;
+  String? _emailError;
+  String? _passwordError;
+
+  void _checkUsername(String username) async {
+    try {
+      final isAvailable = await _usernameService.checkUsername(username);
+      print('Username availability: $isAvailable');
+      setState(() {
+        _usernameError = !isAvailable ? null : 'Username is already taken';
+      });
+    } catch (e) {
+      setState(() {
+        _usernameError = 'Error checking username';
+      });
+    }
+  }
+
+  void _checkEmail(String email) {
+    setState(() {
+      _emailError =
+          EmailValidator.validate(email) ? null : 'Invalid email address';
+    });
+  }
+
+  void _checkPassword(String password) {
+    setState(() {
+      if (password.length < 6) {
+        _passwordError = 'Password must be at least 6 characters';
+      } else if (!RegExp(r'[A-Z]').hasMatch(password)) {
+        _passwordError = 'Password must contain at least one uppercase letter';
+      } else if (!RegExp(r'[0-9]').hasMatch(password)) {
+        _passwordError = 'Password must contain at least one number';
+      } else {
+        _passwordError = null;
+      }
+    });
+  }
 
   void _register() async {
     setState(() {
@@ -101,7 +142,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       vertical: 10,
                       horizontal: 10,
                     ),
+                    errorText: _usernameError,
                   ),
+                  onChanged: (value) {
+                    if (value.length >= 3) {
+                      _checkUsername(value);
+                    } else {
+                      setState(() {
+                        _usernameError =
+                            'Username must be at least 3 characters';
+                      });
+                    }
+                  },
                 ),
                 SizedBox(height: 10),
                 TextField(
@@ -113,7 +165,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       vertical: 10,
                       horizontal: 10,
                     ),
+                    errorText: _emailError,
                   ),
+                  onChanged: (value) {
+                    _checkEmail(value);
+                  },
                 ),
                 SizedBox(height: 10),
                 TextField(
@@ -125,8 +181,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       vertical: 10,
                       horizontal: 10,
                     ),
+                    errorText: _passwordError,
                   ),
                   obscureText: true,
+                  onChanged: (value) {
+                    _checkPassword(value);
+                  },
                 ),
                 SizedBox(height: 10),
                 Row(
