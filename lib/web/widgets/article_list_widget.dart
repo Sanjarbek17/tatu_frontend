@@ -83,7 +83,7 @@ class ArticleListWidget extends StatelessWidget {
                         Expanded(
                           flex: 1,
                           child: Text(
-                            article.schoolYear.toString(),
+                            '${DateFormat('yyyy').format(article.schoolYear.startDate)}/${DateFormat('yyyy').format(article.schoolYear.endDate)}',
                             style: TextStyle(
                               color: Colors.grey[600],
                               fontSize: 12.0,

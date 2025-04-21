@@ -39,10 +39,18 @@ class _ProfessorArticleListScreenState
           (ctx, articleProvider, _) => Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.blue, // Set the AppBar color
-              title: Text('My Articles'),
+              title: Text(
+                'My Articles',
+                style: TextStyle(
+                  color: Colors.white,
+                ), // Set the text color to white
+              ),
               actions: [
                 IconButton(
-                  icon: Icon(Icons.logout),
+                  icon: Icon(
+                    Icons.logout,
+                    color: Colors.white,
+                  ), // Set icon color to white
                   onPressed: () async {
                     final authProvider = Provider.of<AuthProvider>(
                       context,
@@ -51,6 +59,12 @@ class _ProfessorArticleListScreenState
                     await authProvider.logout();
                     context.go('/login');
                   },
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage('https://picsum.photos/200'),
+                  ),
                 ),
               ],
             ),
