@@ -22,16 +22,18 @@ class _ProfessorArticleListScreenState
   String _selectedScreen = '/professor-articles'; // Default screen
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     final articleProvider = Provider.of<ArticleProvider>(
       context,
       listen: false,
     );
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    print('Professor username: ${authProvider.professorProfile?.username}');
-    final username = authProvider.professorProfile?.username ?? 'sanjarbek';
-    articleProvider.fetchArticlesByUsername(username);
+    authProvider.professorProfile!.then((profile) {
+      final username = profile?.username ?? 'default';
+      debugPrint('Professor username: $username'); // Use debugPrint for logging
+      articleProvider.fetchArticlesByUsername(username);
+    });
   }
 
   Widget _getSelectedScreen() {

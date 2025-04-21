@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tatu_frontend/router.dart';
 import 'package:tatu_frontend/web/providers/article_provider.dart';
@@ -12,8 +13,39 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _tryAutoLogin();
+  }
+
+  void _tryAutoLogin() async {
+    print('auto login ');
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final isLoggedIn = await authProvider.tryAutoLogin();
+
+      if (isLoggedIn) {
+        final isProfessor = authProvider.isProfessor;
+        if (isProfessor) {
+          context.go('/professor-dashboard');
+        } else {
+          context.go('/student-dashboard');
+        }
+      }
+    } catch (error) {
+      // Handle auto-login error if needed
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +58,12 @@ class MyApp extends StatelessWidget {
                 Provider.of<AuthProvider>(context, listen: false),
               ),
         ),
-        ChangeNotifierProvider(create: (_) => StudentArticleProvider(
-          Provider.of<AuthProvider>(context, listen: false),
-        )),
+        ChangeNotifierProvider(
+          create:
+              (_) => StudentArticleProvider(
+                Provider.of<AuthProvider>(context, listen: false),
+              ),
+        ),
       ],
       child: MaterialApp.router(
         title: 'Tatu Frontend',

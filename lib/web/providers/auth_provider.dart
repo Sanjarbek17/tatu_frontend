@@ -14,7 +14,20 @@ class AuthProvider with ChangeNotifier {
 
   String? get token => _token;
   bool get isProfessor => professorProfile != null;
-  ProfessorProfile? get professorProfile => _professorProfile;
+  bool get isStudent => studentProfile != null;
+  Future<ProfessorProfile?>? get professorProfile async {
+    if (_professorProfile == null) {
+      final prefs = await SharedPreferences.getInstance();
+      final professorProfileString = prefs.getString('professorProfile');
+      if (professorProfileString != null) {
+        _professorProfile = ProfessorProfile.fromJson(
+          json.decode(professorProfileString),
+        );
+      }
+    }
+    return _professorProfile;
+  }
+
   StudentProfile? get studentProfile => _studentProfile;
 
   Future<void> login(String username, String password) async {

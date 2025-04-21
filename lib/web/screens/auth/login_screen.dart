@@ -18,30 +18,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _tryAutoLogin();
-  }
-
-  void _tryAutoLogin() async {
-    print('auto login ');
-    try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final isLoggedIn = await authProvider.tryAutoLogin();
-
-      if (isLoggedIn) {
-        final isProfessor = authProvider.isProfessor;
-        if (isProfessor) {
-          context.go('/professor-dashboard');
-        } else {
-          context.go('/student-dashboard');
-        }
-      }
-    } catch (error) {
-      // Handle auto-login error if needed
-    }
-  }
 
   void _login() async {
     setState(() {
