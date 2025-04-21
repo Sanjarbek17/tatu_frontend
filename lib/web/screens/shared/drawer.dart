@@ -1,26 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomDrawer extends StatelessWidget {
   final List<Map<String, dynamic>> items = [
-    {'title': 'Dashboard', 'icon': Icons.dashboard},
-    {'title': 'Sales', 'icon': Icons.bar_chart},
-    {'title': 'Analytics', 'icon': Icons.analytics},
-    {'title': 'Layouts', 'icon': Icons.view_quilt},
-    {'title': 'Online Courses', 'icon': Icons.school},
-    {'title': 'Finance', 'icon': Icons.attach_money},
-    {'title': 'Membership', 'icon': Icons.group},
-    {'title': 'User', 'icon': Icons.person},
-    {'title': 'Elements', 'icon': Icons.widgets},
-    {'title': 'Basic', 'icon': Icons.layers},
-    {'title': 'Advance', 'icon': Icons.upgrade},
-    {'title': 'Icons', 'icon': Icons.insert_emoticon},
-    {'title': 'Forms Elements', 'icon': Icons.format_align_left},
-    {'title': 'Forms Plugins', 'icon': Icons.extension},
-    {'title': 'Landing page', 'icon': Icons.web},
-    {'title': 'Authentication', 'icon': Icons.lock},
-    {'title': 'Settings', 'icon': Icons.settings},
-    {'title': 'Email', 'icon': Icons.email},
-    {'title': 'Chat', 'icon': Icons.chat},
+    {'title': 'Dashboard', 'icon': Icons.dashboard, 'screen': '/dashboard'},
+    {'title': 'Sales', 'icon': Icons.bar_chart, 'screen': '/sales'},
+    {'title': 'Analytics', 'icon': Icons.analytics, 'screen': '/analytics'},
+    {'title': 'Layouts', 'icon': Icons.view_quilt, 'screen': '/layouts'},
+    {
+      'title': 'Online Courses',
+      'icon': Icons.school,
+      'screen': '/online-courses',
+    },
+    {'title': 'Finance', 'icon': Icons.attach_money, 'screen': '/finance'},
+    {'title': 'Membership', 'icon': Icons.group, 'screen': '/membership'},
+    {'title': 'User', 'icon': Icons.person, 'screen': '/user'},
+    {'title': 'Elements', 'icon': Icons.widgets, 'screen': '/elements'},
+    {'title': 'Basic', 'icon': Icons.layers, 'screen': '/basic'},
+    {'title': 'Advance', 'icon': Icons.upgrade, 'screen': '/advance'},
+    {'title': 'Icons', 'icon': Icons.insert_emoticon, 'screen': '/icons'},
+    {
+      'title': 'Forms Elements',
+      'icon': Icons.format_align_left,
+      'screen': '/forms-elements',
+    },
+    {
+      'title': 'Forms Plugins',
+      'icon': Icons.extension,
+      'screen': '/forms-plugins',
+    },
+    {'title': 'Landing page', 'icon': Icons.web, 'screen': '/landing-page'},
+    {
+      'title': 'Authentication',
+      'icon': Icons.lock,
+      'screen': '/authentication',
+    },
+    {'title': 'Settings', 'icon': Icons.settings, 'screen': '/settings'},
+    {'title': 'Email', 'icon': Icons.email, 'screen': '/email'},
+    {'title': 'Chat', 'icon': Icons.chat, 'screen': '/chat'},
   ];
 
   CustomDrawer({super.key});
@@ -33,29 +50,6 @@ class CustomDrawer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Container(
-          //   height: 150,
-          //   color: Colors.blue,
-          //   child: Center(
-          //     child: Column(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Text(
-          //           'John Smith',
-          //           style: TextStyle(
-          //             color: Colors.white,
-          //             fontSize: 20,
-          //             fontWeight: FontWeight.bold,
-          //           ),
-          //         ),
-          //         Text(
-          //           'Administrator',
-          //           style: TextStyle(color: Colors.white70, fontSize: 16),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
           Expanded(
             child: ListView.builder(
               itemCount: items.length,
@@ -67,8 +61,9 @@ class CustomDrawer extends StatelessWidget {
                     style: TextStyle(fontSize: 16),
                   ),
                   onTap: () {
-                    Navigator.pop(context); // Close the drawer
-                    // Handle navigation logic here
+                    context.go(
+                      items[index]['screen'],
+                    ); // Navigate using go_router
                   },
                 );
               },

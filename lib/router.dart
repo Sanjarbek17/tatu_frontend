@@ -35,6 +35,23 @@ class LoginObserver extends NavigatorObserver {
 final GoRouter router = GoRouter(
   initialLocation: LoginScreen.routeName,
   observers: [LoginObserver()],
+  errorBuilder:
+      (context, state) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Page Not Found'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (GoRouter.of(context).canPop()) {
+                GoRouter.of(context).pop();
+              } else {
+                GoRouter.of(context).go(LoginScreen.routeName);
+              }
+            },
+          ),
+        ),
+        body: const Center(child: Text('404 - Page Not Found')),
+      ),
   routes: [
     GoRoute(
       path: LoginScreen.routeName,
