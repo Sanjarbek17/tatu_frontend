@@ -19,6 +19,8 @@ class ProfessorArticleListScreen extends StatefulWidget {
 
 class _ProfessorArticleListScreenState
     extends State<ProfessorArticleListScreen> {
+  String _selectedScreen = '/professor-articles'; // Default screen
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +32,17 @@ class _ProfessorArticleListScreenState
     print('Professor username: ${authProvider.professorProfile?.username}');
     final username = authProvider.professorProfile?.username ?? 'sanjarbek';
     articleProvider.fetchArticlesByUsername(username);
+  }
+
+  Widget _getSelectedScreen() {
+    switch (_selectedScreen) {
+      case '/professor-articles':
+        return ArticleListWidget();
+      case '/add-article':
+        return AddArticleScreen();
+      default:
+        return Center(child: Text('Unknown screen selected'));
+    }
   }
 
   @override
@@ -70,20 +83,21 @@ class _ProfessorArticleListScreenState
             ),
             body: Row(
               children: [
-                CustomDrawer(),
+                CustomDrawer(
+                  onItemSelected: (screen) {
+                    setState(() {
+                      _selectedScreen = screen;
+                    });
+                  },
+                  selectedScreen: _selectedScreen, // Pass selected screen
+                ),
                 Expanded(
                   child:
                       articleProvider.isLoading
                           ? Center(child: CircularProgressIndicator())
-                          : ArticleListWidget(),
+                          : _getSelectedScreen(),
                 ),
               ],
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                context.go(AddArticleScreen.routeName);
-              },
-              child: Icon(Icons.add),
             ),
           ),
     );

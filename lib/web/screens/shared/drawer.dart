@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class CustomDrawer extends StatelessWidget {
   final List<Map<String, dynamic>> items = [
     {'title': 'Dashboard', 'icon': Icons.dashboard, 'screen': '/dashboard'},
+    {
+      'title': 'Professor Articles',
+      'icon': Icons.article,
+      'screen': '/professor-articles',
+    },
+    {'title': 'Add Article', 'icon': Icons.add, 'screen': '/add-article'},
     {'title': 'Sales', 'icon': Icons.bar_chart, 'screen': '/sales'},
     {'title': 'Analytics', 'icon': Icons.analytics, 'screen': '/analytics'},
     {'title': 'Layouts', 'icon': Icons.view_quilt, 'screen': '/layouts'},
@@ -40,7 +45,14 @@ class CustomDrawer extends StatelessWidget {
     {'title': 'Chat', 'icon': Icons.chat, 'screen': '/chat'},
   ];
 
-  CustomDrawer({super.key});
+  final Function(String) onItemSelected;
+  final String selectedScreen; // Added to track selected screen
+
+  CustomDrawer({
+    required this.onItemSelected,
+    required this.selectedScreen,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,16 +66,21 @@ class CustomDrawer extends StatelessWidget {
             child: ListView.builder(
               itemCount: items.length,
               itemBuilder: (context, index) {
+                final isSelected = items[index]['screen'] == selectedScreen;
                 return ListTile(
-                  leading: Icon(items[index]['icon'], color: Colors.blue),
+                  leading: Icon(
+                    items[index]['icon'],
+                    color: isSelected ? Colors.blue : Colors.grey,
+                  ),
                   title: Text(
                     items[index]['title'],
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: isSelected ? Colors.blue : Colors.grey,
+                    ),
                   ),
                   onTap: () {
-                    context.go(
-                      items[index]['screen'],
-                    ); // Navigate using go_router
+                    onItemSelected(items[index]['screen']);
                   },
                 );
               },
