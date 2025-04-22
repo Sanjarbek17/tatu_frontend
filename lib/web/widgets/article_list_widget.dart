@@ -18,171 +18,109 @@ class ArticleListWidget extends StatelessWidget {
             style: TextStyle(fontSize: 16.0, color: Colors.grey),
           ),
         )
-        : Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 16.0,
+        : Expanded(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropdownButton<String>(
+                  hint: Text('Filter by School Year'),
+                  value: articleProvider.selectedSchoolYear,
+                  items:
+                      articleProvider.schoolYears.map((year) {
+                        return DropdownMenuItem<String>(
+                          value: year.name,
+                          child: Text(year.name),
+                        );
+                      }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      articleProvider.filterBySchoolYear(value);
+                    }
+                  },
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Row(
                 children: [
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      'Title',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
+                  SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        columns: [
+                          DataColumn(label: Text('Title')),
+                          DataColumn(label: Text('School Year')),
+                          DataColumn(label: Text('Professor')),
+                          DataColumn(label: Text('Created At')),
+                          DataColumn(label: Text('Actions')),
+                        ],
+                        rows:
+                            articleProvider.articles.map((article) {
+                              return DataRow(
+                                cells: [
+                                  DataCell(Text(article.title)),
+                                  DataCell(
+                                    Text(
+                                      '${DateFormat('yyyy').format(article.schoolYear.startDate)}/${DateFormat('yyyy').format(article.schoolYear.endDate)}',
+                                    ),
+                                  ),
+                                  DataCell(Text(article.professor.username)),
+                                  DataCell(
+                                    Text(
+                                      DateFormat(
+                                        'yyyy-MM-dd HH:mm',
+                                      ).format(article.createdAt),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Consumer<AuthProvider>(
+                                      builder: (ctx, authProvider, _) {
+                                        return authProvider.isProfessor
+                                            ? Row(
+                                              children: [
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.visibility,
+                                                    color: Colors.blue,
+                                                  ),
+                                                  onPressed: () {
+                                                    // Handle view article
+                                                  },
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.edit,
+                                                    color: Colors.orange,
+                                                  ),
+                                                  onPressed: () {
+                                                    // Handle edit article
+                                                  },
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(
+                                                    Icons.delete,
+                                                    color: Colors.red,
+                                                  ),
+                                                  onPressed: () {
+                                                    // Handle delete article
+                                                  },
+                                                ),
+                                              ],
+                                            )
+                                            : SizedBox.shrink();
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
                       ),
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      'School Year',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      'Professor',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      'Created At',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 100), // Space for action buttons
                 ],
               ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: articleProvider.articles.length,
-                itemBuilder: (ctx, index) {
-                  final article = articleProvider.articles[index];
-                  return Card(
-                    margin: EdgeInsets.symmetric(
-                      vertical: 8.0,
-                      horizontal: 16.0,
-                    ),
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        articleProvider.downloadArticle(article);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                article.title,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                '${DateFormat('yyyy').format(article.schoolYear.startDate)}/${DateFormat('yyyy').format(article.schoolYear.endDate)}',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12.0,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                article.professor.username,
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12.0,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                DateFormat(
-                                  'yyyy-MM-dd HH:mm',
-                                ).format(article.createdAt),
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12.0,
-                                ),
-                              ),
-                            ),
-                            Consumer<AuthProvider>(
-                              builder: (ctx, authProvider, _) {
-                                return authProvider.isProfessor
-                                    ? Row(
-                                      children: [
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.visibility,
-                                            color: Colors.blue,
-                                          ),
-                                          onPressed: () {
-                                            // Handle view article
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.edit,
-                                            color: Colors.orange,
-                                          ),
-                                          onPressed: () {
-                                            // Handle edit article
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            // Handle delete article
-                                          },
-                                        ),
-                                      ],
-                                    )
-                                    : SizedBox.shrink();
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         );
   }
 }

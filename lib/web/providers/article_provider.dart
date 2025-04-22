@@ -30,10 +30,12 @@ class ArticleProvider with ChangeNotifier {
   ];
   List<Article> _articles = [];
   bool _isLoading = false;
+  String? _selectedSchoolYear;
 
   List<SchoolYear> get schoolYears => _schoolYears;
   List<Article> get articles => _articles;
   bool get isLoading => _isLoading;
+  String? get selectedSchoolYear => _selectedSchoolYear;
 
   void addSchoolYear(SchoolYear year) {
     _schoolYears.add(year);
@@ -138,5 +140,10 @@ class ArticleProvider with ChangeNotifier {
     } catch (error) {
       print('Error downloading article: $error');
     }
+  }
+
+  void filterBySchoolYear(String schoolYear) {
+    _selectedSchoolYear = schoolYear;
+    notifyListeners();
   }
 }

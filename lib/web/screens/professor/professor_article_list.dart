@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:tatu_frontend/web/screens/professor/article_form.dart';
-import 'package:tatu_frontend/web/widgets/article_list_widget.dart';
+import 'package:tatu_frontend/core/constants.dart';
 import 'package:tatu_frontend/web/providers/article_provider.dart';
 import 'package:tatu_frontend/web/providers/auth_provider.dart';
 import '../shared/drawer.dart';
@@ -36,36 +35,20 @@ class _ProfessorArticleListScreenState
     });
   }
 
-  Widget _getSelectedScreen() {
-    switch (_selectedScreen) {
-      case '/professor-articles':
-        return ArticleListWidget();
-      case '/add-article':
-        return AddArticleScreen();
-      default:
-        return Center(child: Text('Unknown screen selected'));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<ArticleProvider>(
       builder:
           (ctx, articleProvider, _) => Scaffold(
             appBar: AppBar(
-              backgroundColor: Colors.blue, // Set the AppBar color
+              backgroundColor: Colors.blue,
               title: Text(
-                'My Articles',
-                style: TextStyle(
-                  color: Colors.white,
-                ), // Set the text color to white
+                'Tatu Dashboard',
+                style: TextStyle(color: Colors.white),
               ),
               actions: [
                 IconButton(
-                  icon: Icon(
-                    Icons.logout,
-                    color: Colors.white,
-                  ), // Set icon color to white
+                  icon: Icon(Icons.logout, color: Colors.white),
                   onPressed: () async {
                     final authProvider = Provider.of<AuthProvider>(
                       context,
@@ -91,18 +74,20 @@ class _ProfessorArticleListScreenState
                       _selectedScreen = screen;
                     });
                   },
-                  selectedScreen: _selectedScreen, // Pass selected screen
+                  selectedScreen: _selectedScreen,
                   isProfessor:
                       Provider.of<AuthProvider>(
                         context,
                         listen: false,
-                      ).isProfessor, // Professors always have access to professor-specific features
+                      ).isProfessor,
                 ),
                 Expanded(
-                  child:
-                      articleProvider.isLoading
-                          ? Center(child: CircularProgressIndicator())
-                          : _getSelectedScreen(),
+                  child: Expanded(
+                    child:
+                        articleProvider.isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : getSelectedScreen(_selectedScreen),
+                  ),
                 ),
               ],
             ),
