@@ -18,7 +18,7 @@ class ProfessorArticleListScreen extends StatefulWidget {
 
 class _ProfessorArticleListScreenState
     extends State<ProfessorArticleListScreen> {
-  String _selectedScreen = '/professor-articles'; // Default screen
+  String _selectedScreen = '/ilmiy-maqola'; // Default screen
 
   @override
   void didChangeDependencies() {
@@ -40,6 +40,15 @@ class _ProfessorArticleListScreenState
     return Consumer<ArticleProvider>(
       builder:
           (ctx, articleProvider, _) => Scaffold(
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  _selectedScreen = '/add-article';
+                });
+              },
+              backgroundColor: Colors.blue, // Set background color to blue
+              child: Icon(Icons.add, color: Colors.white, size: 30),
+            ),
             appBar: AppBar(
               backgroundColor: Colors.blue,
               title: Text(
