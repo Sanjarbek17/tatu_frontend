@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tatu_frontend/web/screens/professor/article_form.dart';
+import 'package:tatu_frontend/web/screens/professor/oquv_qollanma_screen.dart';
 import 'package:tatu_frontend/web/widgets/article_list_widget.dart';
 
 const List<Map<String, dynamic>> drawerItems = [
@@ -70,14 +71,12 @@ Widget getSelectedScreen(String screen) {
         child: Text('Monografiya'),
       ); // Replace with actual screen widget
     case '/oquv-qollanma':
-      return Center(
-        child: Text('O‘quv qo‘llanma'),
-      ); // Replace with actual screen widget
+      return const OquvQollanmaScreen();
     case '/oquv-uslubiy-qollanma':
       return Center(
         child: Text('O‘quv-uslubiy qo‘llanma'),
       ); // Replace with actual screen widget
-    case '/amaliy-mashgulotlar':
+    case '/amaliy-mashg‘ulotlar':
       return Center(
         child: Text('Amaliy mashg‘ulotlar uchun metodik qo‘llanma'),
       ); // Replace with actual screen widget
