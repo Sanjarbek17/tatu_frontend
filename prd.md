@@ -1,0 +1,16 @@
+Requirement ID | Description | User Story | Expected Behavior/Outcome
+FR001 | Role Switching | As a user, I want to be able to switch between "Admin" and "Professor" roles. | The system should detect user roles and provide a toggle or dropdown to switch between Admin and Professor panels.
+FR002 | View and Edit Professor Profile | As a professor, I want to edit my profile so I can keep my information up-to-date. | The system should allow professors to edit fields like bio and department from the Professor Panel.
+FR003 | Upload Scientific Article | As a professor, I want to upload an article file with a title and description. | The system should provide a form to upload a file, enter title, description, and select school year.
+FR004 | Manage Ilmiy Maqola Sub-types | As a professor, I want to specify the type of my scientific work (e.g., patent, monograph). | When uploading an IlmiyMaqola, the professor should be able to select the related sub-type and fill its required fields (e.g., patent number).
+FR005 | Associate Article with School Year | As a professor, I want to tag each article with a school year. | The upload form should include a dropdown to select an existing SchoolYear.
+FR006 | View All Professors (Admin) | As an admin, I want to view all registered professors. | The Admin Panel should display a table of all ProfessorProfile entries with options to view or edit.
+FR007 | Manage Kafedra | As an admin, I want to manage Kafedra and link them with professors and materials. | Admin should be able to create/update Kafedra, and assign professors and materials (articles, patents, etc.) to it.
+FR008 | View and Manage Articles (Admin) | As an admin, I want to see and manage all uploaded articles. | Admin Panel should show a list of all Article and IlmiyMaqola entries with filtering by professor or year.
+FR009 | View Professor's Articles | As a professor, I want to see all the articles I have uploaded. | The Professor Panel should display a list of uploaded articles with options to edit or delete.
+FR010 | Secure File Upload | As a user, I want my uploaded files to be securely stored and retrievable. | The system should handle file uploads securely using Django's file storage, saving them in articles/.
+FR011 | School Year Management (Admin) | As an admin, I want to manage academic years for organizing submissions. | Admin can create/edit/delete SchoolYear entries with start and end dates.
+FR012 | Authentication and Role Detection | As a user, I want the system to recognize my roles after login. | Upon login, the system checks if the user has ProfessorProfile and/or is an admin, then displays corresponding access options.
+FR013 | View Kafedra Contents | As an admin, I want to view all materials linked to a Kafedra. | Admin can select a Kafedra and view all related scientific materials (articles, patents, etc.) grouped accordingly.
+FR014 | Delete Article | As a professor, I want to delete my uploaded articles if needed. | The system should provide delete functionality with confirmation to remove an article and its file.
+FR015 | Associate Materials with Kafedra | As a professor or admin, I want to link materials to departments. | While uploading or editing materials, the user can select one or more Kafedras to associate with the material.
