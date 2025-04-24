@@ -43,91 +43,160 @@ class ArticleListWidget extends StatelessWidget {
                           },
                         ),
                       ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: DataTable(
-                              columns: [
-                                DataColumn(label: Text('Title')),
-                                DataColumn(label: Text('School Year')),
-                                DataColumn(label: Text('Professor')),
-                                DataColumn(label: Text('Created At')),
-                                DataColumn(label: Text('Actions')),
-                              ],
-                              rows:
-                                  articleProvider.articles.map((article) {
-                                    return DataRow(
-                                      cells: [
-                                        DataCell(Text(article.title)),
-                                        DataCell(
-                                          Text(
-                                            '${DateFormat('yyyy').format(article.schoolYear.startDate)}/${DateFormat('yyyy').format(article.schoolYear.endDate)}',
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(article.professor.username),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            DateFormat(
-                                              'yyyy-MM-dd HH:mm',
-                                            ).format(article.createdAt),
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Consumer<AuthProvider>(
-                                            builder: (ctx, authProvider, _) {
-                                              return authProvider.isProfessor
-                                                  ? Row(
-                                                    children: [
-                                                      IconButton(
-                                                        icon: Icon(
-                                                          Icons.visibility,
-                                                          color: Colors.blue,
-                                                        ),
-                                                        onPressed: () {
-                                                          // Handle view article
-                                                        },
-                                                      ),
-                                                      IconButton(
-                                                        icon: Icon(
-                                                          Icons.edit,
-                                                          color: Colors.orange,
-                                                        ),
-                                                        onPressed: () {
-                                                          // Handle edit article
-                                                        },
-                                                      ),
-                                                      IconButton(
-                                                        icon: Icon(
-                                                          Icons.delete,
-                                                          color: Colors.red,
-                                                        ),
-                                                        onPressed: () {
-                                                          // Handle delete article
-                                                        },
-                                                      ),
-                                                    ],
-                                                  )
-                                                  : SizedBox.shrink();
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                'Title',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                'School Year',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                'Professor',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                'Created At',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                'Actions',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: articleProvider.articles.length,
+                          itemBuilder: (context, index) {
+                            final article = articleProvider.articles[index];
+                            return Container(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                                vertical: 4.0,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withAlpha(
+                                      (0.2 * 255).toInt(),
+                                    ),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        article.title,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        '${DateFormat('yyyy').format(article.schoolYear.startDate)}/${DateFormat('yyyy').format(article.schoolYear.endDate)}',
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(article.professor.username),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        DateFormat(
+                                          'yyyy-MM-dd HH:mm',
+                                        ).format(article.createdAt),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Consumer<AuthProvider>(
+                                        builder: (ctx, authProvider, _) {
+                                          return authProvider.isProfessor
+                                              ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      Icons.visibility,
+                                                      color: Colors.blue,
+                                                    ),
+                                                    onPressed: () {
+                                                      // Handle view article
+                                                    },
+                                                  ),
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      Icons.edit,
+                                                      color: Colors.orange,
+                                                    ),
+                                                    onPressed: () {
+                                                      // Handle edit article
+                                                    },
+                                                  ),
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      Icons.delete,
+                                                      color: Colors.red,
+                                                    ),
+                                                    onPressed: () {
+                                                      // Handle delete article
+                                                    },
+                                                  ),
+                                                ],
+                                              )
+                                              : SizedBox.shrink();
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ],
                   ),
         ),
-        Container(
+        Padding(
           padding: const EdgeInsets.all(8.0),
-          color: Colors.grey[200],
           child: Text(
             'Total Articles: ${articleProvider.articles.length}',
             style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),

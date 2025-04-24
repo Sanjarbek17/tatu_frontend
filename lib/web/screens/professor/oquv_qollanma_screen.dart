@@ -14,25 +14,51 @@ class OquvQollanmaScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('O‘quv qo‘llanma')),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columns: const [
-            DataColumn(label: Text('Nomi')),
-            DataColumn(label: Text('Muallif')),
-            DataColumn(label: Text('Yili')),
-          ],
-          rows:
-              data.map((item) {
-                return DataRow(
-                  cells: [
-                    DataCell(Text(item['title']!)),
-                    DataCell(Text(item['author']!)),
-                    DataCell(Text(item['year']!)),
-                  ],
-                );
-              }).toList(),
+      body: ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          final item = data[index];
+          return Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 8.0,
+          horizontal: 16.0,
         ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8.0),
+            boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4.0,
+            offset: const Offset(0, 2),
+          ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 2,
+              child: Text(
+            item['title']!,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Text(
+            'Muallif: ${item['author']!}\nYili: ${item['year']!}',
+              ),
+            ),
+          ],
+            ),
+          ),
+        ),
+          );
+        },
       ),
     );
   }
