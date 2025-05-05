@@ -1,0 +1,6 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        options:
+          generate_to_json: true
