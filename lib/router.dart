@@ -1,39 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:tatu_frontend/web/providers/auth_provider.dart';
 import 'package:tatu_frontend/web/screens/auth/login_screen.dart';
 import 'package:tatu_frontend/web/screens/auth/register_screen.dart';
 import 'package:tatu_frontend/web/screens/professor/article_form.dart';
 import 'package:tatu_frontend/web/screens/professor/professor_article_list.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tatu_frontend/web/providers/auth_provider.dart';
 
 class LoginObserver extends NavigatorObserver {
-  final WidgetRef ref;
-
-  LoginObserver(this.ref);
-
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPush(route, previousRoute);
-    _checkLoginStatus(route, ref);
+    _checkLoginStatus(route);
   }
 
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
     if (newRoute != null) {
-      _checkLoginStatus(newRoute, ref);
+      _checkLoginStatus(newRoute);
     }
   }
 
-  void _checkLoginStatus(Route<dynamic> route, WidgetRef ref) async {
+  void _checkLoginStatus(Route<dynamic> route) async {
     if (route.settings.name == RegisterScreen.routeName ||
         route.settings.name == LoginScreen.routeName ||
         route.settings.name == null) {
       return;
     }
-
-    final isLoggedIn = await ref.read(authProvider.notifier).tryAutoLogin();
+    final authProvider = route.navigator!.context.read<AuthProvider>();
+    final isLoggedIn = await authProvider.tryAutoLogin();
     if (!isLoggedIn && route.settings.name != LoginScreen.routeName) {
       print('screen name: ${route.settings.name}');
 
@@ -44,7 +40,7 @@ class LoginObserver extends NavigatorObserver {
 
 final GoRouter router = GoRouter(
   initialLocation: LoginScreen.routeName,
-  observers: [], // Removed LoginObserver instantiation for now
+  observers: [LoginObserver()],
   errorBuilder:
       (context, state) => Scaffold(
         appBar: AppBar(
@@ -63,7 +59,14 @@ final GoRouter router = GoRouter(
         body: const Center(child: Text('404 - Page Not Found')),
       ),
   routes: [
-    GoRoute(path: LoginScreen.routeName, builder: (context, state) => const LoginScreen()),
+    GoRoute(
+      path: LoginScreen.routeName,
+      builder: (context, state) => const LoginScreen(),
+    ),
+    // GoRoute(
+    //   path: ArticleListScreen.routeName,
+    //   builder: (context, state) => const ArticleListScreen(),
+    // ),
     GoRoute(
       path: ProfessorArticleListScreen.routeName,
       builder: (context, state) => const ProfessorArticleListScreen(),
@@ -72,6 +75,9 @@ final GoRouter router = GoRouter(
       path: AddArticleScreen.routeName,
       builder: (context, state) => const AddArticleScreen(),
     ),
-    GoRoute(path: RegisterScreen.routeName, builder: (context, state) => const RegisterScreen()),
+    GoRoute(
+      path: RegisterScreen.routeName,
+      builder: (context, state) => const RegisterScreen(),
+    ),
   ],
 );

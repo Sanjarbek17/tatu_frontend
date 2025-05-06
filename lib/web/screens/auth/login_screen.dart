@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 import 'package:tatu_frontend/web/screens/auth/register_screen.dart';
 import '../../providers/auth_provider.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
+class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
 
   const LoginScreen({super.key});
@@ -13,10 +13,11 @@ class LoginScreen extends ConsumerStatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+
 
   void _login() async {
     setState(() {
@@ -24,13 +25,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     try {
-      final isLoggedIn = await ref
-          .read(authProvider.notifier)
-          .login(_usernameController.text, _passwordController.text);
+      await Provider.of<AuthProvider>(
+        context,
+        listen: false,
+      ).login(_usernameController.text, _passwordController.text);
 
-      if (isLoggedIn) {
-        final isProfessor = ref.watch(authProvider).isProfessor;
-        context.go(isProfessor ? '/professor-dashboard' : '/student-dashboard');
+      final isProfessor =
+          Provider.of<AuthProvider>(context, listen: false).isProfessor;
+      if (isProfessor) {
+        context.go('/professor-dashboard');
+      } else {
+        context.go('/professor-dashboard');
+        // context.go('/student-dashboard');
       }
     } catch (error) {
       showDialog(
@@ -39,7 +45,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             (ctx) => AlertDialog(
               title: Text('Login Failed'),
               content: Text(error.toString()),
-              actions: [TextButton(onPressed: () => context.pop(), child: Text('Okay'))],
+              actions: [
+                TextButton(onPressed: () => context.pop(), child: Text('Okay')),
+              ],
             ),
       );
     } finally {
@@ -73,7 +81,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   decoration: InputDecoration(
                     labelText: 'Username',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 10,
+                    ),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -82,7 +93,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   decoration: InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 10,
+                    ),
                   ),
                   obscureText: true,
                 ),

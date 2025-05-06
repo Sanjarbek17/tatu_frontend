@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:tatu_frontend/main.dart';
 
+import '../../providers/auth_provider.dart';
 import '../../services/username_service.dart';
 
-class RegisterScreen extends ConsumerStatefulWidget {
+class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
 
   const RegisterScreen({super.key});
@@ -15,7 +15,7 @@ class RegisterScreen extends ConsumerStatefulWidget {
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
@@ -42,7 +42,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   void _checkEmail(String email) {
     setState(() {
-      _emailError = EmailValidator.validate(email) ? null : 'Invalid email address';
+      _emailError =
+          EmailValidator.validate(email) ? null : 'Invalid email address';
     });
   }
 
@@ -65,11 +66,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       _isLoading = true;
     });
 
-    final success = await ref
-        .read(authProvider.notifier)
-        .login(_usernameController.text, _passwordController.text);
+    try {
+      await Provider.of<AuthProvider>(context, listen: false).register(
+        _usernameController.text,
+        _passwordController.text,
+        _emailController.text,
+        _isProfessor,
+      );
 
-    if (success) {
       showDialog(
         context: context,
         builder:
@@ -80,28 +84,35 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 TextButton(
                   onPressed: () {
                     Navigator.of(ctx).pop();
-                    context.go('/login');
+                    context.go(
+                      '/login',
+                    ); // Navigate to login screen using go_router
                   },
                   child: Text('Okay'),
                 ),
               ],
             ),
       );
-    } else {
+    } catch (error) {
       showDialog(
         context: context,
         builder:
             (ctx) => AlertDialog(
               title: Text('Error'),
-              content: Text('Invalid credentials'),
-              actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Okay'))],
+              content: Text(error.toString()),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: Text('Okay'),
+                ),
+              ],
             ),
       );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
@@ -127,7 +138,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   decoration: InputDecoration(
                     labelText: 'Username',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 10,
+                    ),
                     errorText: _usernameError,
                   ),
                   onChanged: (value) {
@@ -135,7 +149,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       _checkUsername(value);
                     } else {
                       setState(() {
-                        _usernameError = 'Username must be at least 3 characters';
+                        _usernameError =
+                            'Username must be at least 3 characters';
                       });
                     }
                   },
@@ -146,7 +161,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   decoration: InputDecoration(
                     labelText: 'Email',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 10,
+                    ),
                     errorText: _emailError,
                   ),
                   onChanged: (value) {
@@ -159,7 +177,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   decoration: InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 10,
+                    ),
                     errorText: _passwordError,
                   ),
                   obscureText: true,
@@ -190,7 +211,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 SizedBox(height: 20),
                 _isLoading
                     ? Center(child: CircularProgressIndicator())
-                    : ElevatedButton(onPressed: _register, child: Text('Register')),
+                    : ElevatedButton(
+                      onPressed: _register,
+                      child: Text('Register'),
+                    ),
               ],
             ),
           ),

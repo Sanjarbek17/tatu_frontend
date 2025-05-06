@@ -1,32 +1,36 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:tatu_frontend/web/models/article.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tatu_frontend/web/providers/auth_provider.dart';
 import 'dart:convert';
 import '../constants.dart';
-import '../../features/auth/data/auth_notifier.dart'; // Corrected import for AuthNotifier
 
-final authProvider = Provider<AuthNotifier>((ref) => AuthNotifier());
+class StudentArticleProvider with ChangeNotifier {
+  final AuthProvider authProvider;
 
-class StudentArticleProvider extends StateNotifier<List<Article>> {
-  final Ref ref;
-
-  StudentArticleProvider(this.ref) : super([]);
-
+  List<Article> _articles = [];
   bool _isLoading = false;
+
+  List<Article> get articles => _articles;
   bool get isLoading => _isLoading;
+
+  StudentArticleProvider(this.authProvider);
 
   Future<void> fetchArticles() async {
     _isLoading = true;
-    state = [];
+    notifyListeners();
 
-    final token = ref.read(authProvider).state.token;
+    final token = authProvider.token;
 
     final url = Uri.parse('$baseUrl/api/articles/');
     try {
-      final response = await http.get(url, headers: {'Authorization': 'Token $token'});
+      final response = await http.get(
+        url,
+        headers: {'Authorization': 'Token $token'},
+      );
       if (response.statusCode == 200) {
         final List<dynamic> decodedData = json.decode(response.body);
-        state = decodedData.map((json) => Article.fromJson(json)).toList();
+        _articles = decodedData.map((json) => Article.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load articles');
       }
@@ -34,6 +38,7 @@ class StudentArticleProvider extends StateNotifier<List<Article>> {
       // Handle error
     } finally {
       _isLoading = false;
+      notifyListeners();
     }
   }
 }

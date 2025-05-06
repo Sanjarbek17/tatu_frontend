@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../constants.dart'; // Corrected import path for baseUrl
+import 'package:provider/provider.dart';
+import 'package:tatu_frontend/web/constants.dart';
 import '../../providers/submit_article_provider.dart';
 import '../../services/school_year_service.dart';
 import '../../models/school_year.dart';
 
-class AddArticleScreen extends ConsumerStatefulWidget {
+class AddArticleScreen extends StatefulWidget {
   static const routeName = '/add-article';
 
   const AddArticleScreen({super.key});
@@ -16,7 +16,7 @@ class AddArticleScreen extends ConsumerStatefulWidget {
   _AddArticleScreenState createState() => _AddArticleScreenState();
 }
 
-class _AddArticleScreenState extends ConsumerState<AddArticleScreen> {
+class _AddArticleScreenState extends State<AddArticleScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   SchoolYear? _selectedSchoolYear;
@@ -62,19 +62,26 @@ class _AddArticleScreenState extends ConsumerState<AddArticleScreen> {
             (ctx) => AlertDialog(
               title: Text('Missing Information'),
               content: Text('Please fill all fields and select a file.'),
-              actions: [TextButton(onPressed: () => context.pop(), child: Text('Okay'))],
+              actions: [
+                TextButton(onPressed: () => context.pop(), child: Text('Okay')),
+              ],
             ),
       );
       return;
     }
 
-    final submitArticleNotifier = ref.read(submitArticleProvider.notifier);
+    final submitArticleProvider = Provider.of<SubmitArticleProvider>(
+      context,
+      listen: false,
+    );
 
     try {
-      await submitArticleNotifier.submitArticle(
-        _titleController.text,
-        _descriptionController.text,
-        _selectedFile!.path!, // Assuming file path is required
+      await submitArticleProvider.submitArticle(
+        title: _titleController.text,
+        description: _descriptionController.text,
+        schoolYear: _selectedSchoolYear!.id,
+        fileBytes: _selectedFile!.bytes!,
+        fileName: _selectedFile!.name,
       );
 
       showDialog(
@@ -95,14 +102,16 @@ class _AddArticleScreenState extends ConsumerState<AddArticleScreen> {
             ),
       );
     } catch (error) {
-      print('Error submitting article: $error');
+      print('error submitting article: $error');
       showDialog(
         context: context,
         builder:
             (ctx) => AlertDialog(
               title: Text('Error'),
               content: Text(error.toString()),
-              actions: [TextButton(onPressed: () => context.pop(), child: Text('Okay'))],
+              actions: [
+                TextButton(onPressed: () => context.pop(), child: Text('Okay')),
+              ],
             ),
       );
     }
@@ -128,7 +137,10 @@ class _AddArticleScreenState extends ConsumerState<AddArticleScreen> {
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Colors.grey[200],
-                  contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 15,
+                  ),
                 ),
               ),
               SizedBox(height: 10),
@@ -150,7 +162,12 @@ class _AddArticleScreenState extends ConsumerState<AddArticleScreen> {
                 value: _selectedSchoolYear,
                 items:
                     _schoolYears
-                        .map((year) => DropdownMenuItem(value: year, child: Text(year.name)))
+                        .map(
+                          (year) => DropdownMenuItem(
+                            value: year,
+                            child: Text(year.name),
+                          ),
+                        )
                         .toList(),
                 onChanged: (value) {
                   setState(() {
@@ -162,13 +179,19 @@ class _AddArticleScreenState extends ConsumerState<AddArticleScreen> {
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _pickFile,
-                child: Text(_selectedFile == null ? 'Pick File' : 'Change File'),
+                child: Text(
+                  _selectedFile == null ? 'Pick File' : 'Change File',
+                ),
               ),
-              if (_selectedFile != null) Text('Selected File: ${_selectedFile!.name}'),
+              if (_selectedFile != null)
+                Text('Selected File: ${_selectedFile!.name}'),
               SizedBox(height: 20),
               _isLoading
                   ? Center(child: CircularProgressIndicator())
-                  : ElevatedButton(onPressed: _submitArticle, child: Text('Submit Article')),
+                  : ElevatedButton(
+                    onPressed: _submitArticle,
+                    child: Text('Submit Article'),
+                  ),
             ],
           ),
         ),

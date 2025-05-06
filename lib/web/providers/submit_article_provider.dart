@@ -1,60 +1,68 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:typed_data'; // Import for Uint8List
 import '../constants.dart';
 import 'auth_provider.dart';
 
-class SubmitArticleState {
-  final bool isLoading;
-  final String? error;
+class SubmitArticleProvider with ChangeNotifier {
+  final AuthProvider authProvider;
 
-  SubmitArticleState({this.isLoading = false, this.error});
+  SubmitArticleProvider(this.authProvider);
 
-  SubmitArticleState copyWith({bool? isLoading, String? error}) {
-    return SubmitArticleState(isLoading: isLoading ?? this.isLoading, error: error);
-  }
-}
+  bool _isSubmitting = false;
 
-class SubmitArticleNotifier extends StateNotifier<SubmitArticleState> {
-  final Ref _ref;
+  bool get isSubmitting => _isSubmitting;
 
-  SubmitArticleNotifier(this._ref) : super(SubmitArticleState());
+  Future<void> submitArticle({
+    required String title,
+    required String description,
+    required int schoolYear, // Changed schoolYear to int type
+    Uint8List? fileBytes, // Add fileBytes for web compatibility
+    String? fileName, // Add fileName for web compatibility
+  }) async {
+    _isSubmitting = true;
+    notifyListeners();
 
-  Future<void> submitArticle(String title, String description, String filePath) async {
-    state = state.copyWith(isLoading: true);
-    final authState = _ref.read(authProvider);
-
-    if (authState.token == null) {
-      state = state.copyWith(isLoading: false, error: 'User not authenticated.');
-      return;
-    }
-
-    final dio = Dio();
-    final url = '$baseUrl/api/articles/';
-
+    final url = Uri.parse('$baseUrl/api/articles/upload/');
     try {
-      final formData = FormData.fromMap({
-        'title': title,
-        'description': description,
-        'file': await MultipartFile.fromFile(filePath),
-      });
+      final request =
+          http.MultipartRequest('POST', url)
+            ..fields['title'] = title
+            ..fields['description'] = description
+            ..fields['school_year'] =
+                schoolYear.toString(); // Convert int to String
 
-      final response = await dio.post(
-        url,
-        data: formData,
-        options: Options(headers: {'Authorization': 'Bearer ${authState.token}'}),
-      );
-
-      if (response.statusCode != 201) {
-        throw Exception('Failed to submit article.');
+      final token = authProvider.token;
+      if (token != null) {
+        print('token: $token'); // Debug print for token
+        request.headers['Authorization'] = 'Token $token';
+      } else {
+        throw Exception('No token found');
       }
 
-      state = state.copyWith(isLoading: false);
-    } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      if (fileBytes != null && fileName != null) {
+        request.files.add(
+          http.MultipartFile.fromBytes('file', fileBytes, filename: fileName),
+        );
+      } else {
+        throw Exception('No file provided');
+      }
+
+      final response = await request.send();
+
+      if (response.statusCode != 201) {
+        final responseBody = await response.stream.bytesToString();
+        print(
+          'Error: ${response.statusCode}, Response: $responseBody',
+        ); // Debug print for status code and backend error
+        throw Exception('Failed to submit article');
+      }
+    } catch (error) {
+      debugPrint('Error submitting article: $error'); // Log the error
+      rethrow;
+    } finally {
+      _isSubmitting = false;
+      notifyListeners();
     }
   }
 }
-
-final submitArticleProvider = StateNotifierProvider<SubmitArticleNotifier, SubmitArticleState>(
-  (ref) => SubmitArticleNotifier(ref),
-);
